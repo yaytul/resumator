@@ -1,0 +1,105 @@
+{
+	"info": {
+		"name": "resumator",
+		"_postman_id": "3a36c96a-bc81-6f37-f822-31642509fe25",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "resumator",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8080/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						""
+					]
+				},
+				"description": "Resumator request"
+			},
+			"response": []
+		},
+		{
+			"name": "resumator",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 201\"] = responseCode.code === 201;",
+							"tests[\"Body is NOT empty\"] = (responseBody!==null && responseBody.length>0);",
+							"tests[\"Content-Type is present\"] = responseHeaders.hasOwnProperty(\"Content-Type\");",
+							"tests[\"Content-Type is application/zip\"] = responseHeaders[\"Content-Type\"] === \"application/zip\";",
+							"tests[\"Content-Disposition is present\"] = responseHeaders.hasOwnProperty(\"Content-Disposition\");",
+							"tests[\"Content-Disposition is expected value\"] = responseHeaders[\"Content-Disposition\"] === \"attachment; filename=\\\"converted_files.zip\\\"\";",
+							"",
+							"",
+							"",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/zip"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "data",
+							"description": "Upload file",
+							"type": "file",
+							"src": "resume.md"
+						},
+						{
+							"key": "targetName",
+							"value": "Yalim Aytul",
+							"description": "Target file name",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/go",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"go"
+					]
+				},
+				"description": "Resumator request"
+			},
+			"response": []
+		}
+	]
+}

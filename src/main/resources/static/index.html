@@ -1,0 +1,49 @@
+<html>
+<body>
+	<form action="/go" method="POST" enctype="multipart/form-data">
+		<table>
+			<thead>
+				<tr>
+					<th colspan="3"><h1>Markdown Converter</h1></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>File to convert:</td>
+					<td><input type="file" name="data"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Target file name (optional):</td>
+					<td><input type="text" name="targetName"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" value="Convert!"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td colspan="2"></td>
+					<td>
+						<p style="">
+							Upload your markdown file to convert to;
+							<ul>
+								<li>Html</li>
+								<li>Microsoft Word (docx)</li>
+								<li>XML</li>
+								<li>PDF</li>
+							</ul>
+							Once you upload a <b>markdown</b> file and hit convert button, you'll get zipped download file that contains all format conversions of your file.
+							Use optional target file name field to customize the <b>name</b> your converted files.
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="3"></td>
+				</tr>
+			</tfoot>
+		</table>
+	</form>
+</body>
+</html>

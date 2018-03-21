@@ -1,5 +1,9 @@
 # Resumator
 
+ 
+[![Build Status](https://travis-ci.org/yaytul/resumator.svg?branch=master)](https://travis-ci.org/yaytul/resumator) 
+
+
 A simple application to convert your markdown document to other formats listed below;
 
 * Microsoft Word

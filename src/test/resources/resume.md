@@ -1,6 +1,6 @@
 # YALIM AYTUL
 - - -
-**Email:** <yalim.aytul@gmail.com><br />
+**Email:** yalim.aytul@gmail.com<br />
 **Web:** <a href="https://www.aug70.com" target="_blank">aug70.com</a> | <a href="https://www.yalimaytul.com" target="_blank">yalimaytul.com</a><br />
 **Social:** <a href="https://www.linkedin.com/in/yalimaytul" target="_blank">LinkedIn</a> | <a href="https://twitter.com/aug70co" target="_blank">Twitter</a>
 - - -

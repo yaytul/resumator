@@ -3,9 +3,13 @@ package com.aug70.resumator.service;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -30,38 +34,37 @@ public class MdConversionService {
 	
 	public ByteArrayOutputStream convertAll(final UploadedFile uploadedFile) throws Exception {
 		LOGGER.debug("Converting uploaded file.");
-		Stream<Future<ConvertedFile[]>> files = Stream.of(
+		
+		return zipAndReturn(Stream.of(
 				threadPoolTaskExecutor.submit(new ConverterTask(new Md2HtmlPdf(), uploadedFile)),
-				threadPoolTaskExecutor.submit(new ConverterTask(new Md2Xml(), uploadedFile)),
-				threadPoolTaskExecutor.submit(new ConverterTask(new Md2Docx(), uploadedFile)));
-		
-		return zipAndReturn(files);
-		
+				threadPoolTaskExecutor.submit(new ConverterTask(new Md2Docx(), uploadedFile)),
+				threadPoolTaskExecutor.submit(new ConverterTask(new Md2Xml(), uploadedFile)))
+				.collect(Collectors.toList()));
 	}
 	
-	final ByteArrayOutputStream zipAndReturn(Stream<Future<ConvertedFile[]>> stream) throws Exception {
+	final ByteArrayOutputStream zipAndReturn(List<Future<ConvertedFile[]>> fileList) throws Exception {
         try(
         		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         		BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
         		ZipOutputStream zipOut = new ZipOutputStream(bufferedOutputStream);
         	) {
         		Long start = System.currentTimeMillis();
-		    stream.forEach(fileArray -> addToZip(zipOut, fileArray));
+		    fileList.forEach(futureFileArray -> addToZip(zipOut, futureFileArray));
 		    zipOut.flush();
 		    LOGGER.info(String.format("Finished in %s ms.", System.currentTimeMillis() - start));
 	        return byteArrayOutputStream;
 	       }
 	}
 	
-	private void addToZip(ZipOutputStream zipOut, Future<ConvertedFile[]> convertedFileArray) {
+	private void addToZip(ZipOutputStream zipOut, Future<ConvertedFile[]> futureFileArray) {
 		try {
-			ConvertedFile[] fileArray = convertedFileArray.get();
+			ConvertedFile[] fileArray = futureFileArray.get(5, TimeUnit.SECONDS);
 			for(ConvertedFile file : fileArray) {
 				ZipEntry zipEntry = new ZipEntry(file.getName());
 				zipOut.putNextEntry(zipEntry);
 				zipOut.write(file.getBytes());
 			}
-		} catch (InterruptedException | ExecutionException | IOException e) {
+		} catch (InterruptedException | ExecutionException | IOException | TimeoutException e) {
 			LOGGER.error("Exception while zipping.", e);
 			throw new RuntimeException(e);
 		}

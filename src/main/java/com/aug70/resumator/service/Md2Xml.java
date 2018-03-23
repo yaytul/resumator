@@ -5,18 +5,26 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.aug70.resumator.model.ConvertedFile;
 import com.aug70.resumator.model.UploadedFile;
 
 class Md2Xml implements Converter {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Md2Xml.class);
 
 	@Override
 	public ConvertedFile[] convert(UploadedFile file) throws IOException {
+		long start = System.currentTimeMillis();
 		try(
 			InputStream stream = file.getInputStream();
 			Reader reader = new InputStreamReader(stream);
 		) {
-			return new ConvertedFile[] { new ConvertedFile(file.getName() + ".xml", ConverterWrapper.toXml(reader))};
+			String xml = ConverterWrapper.toXml(reader);
+			LOGGER.info(String.format("Xml converted in %s ms.", System.currentTimeMillis() - start));
+			return new ConvertedFile[] { new ConvertedFile(file.getName() + ".xml", xml)};
 		}
 	}
 }

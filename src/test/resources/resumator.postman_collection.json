@@ -49,9 +49,11 @@
 							"tests[\"Status code is 201\"] = responseCode.code === 201;",
 							"tests[\"Body is NOT empty\"] = (responseBody!==null && responseBody.length>0);",
 							"tests[\"Content-Type is present\"] = responseHeaders.hasOwnProperty(\"Content-Type\");",
-							"tests[\"Content-Type is application/zip\"] = responseHeaders[\"Content-Type\"] === \"application/zip\";",
+							"tests[\"Content-Type is application/zip\"] = responseHeaders[\"Content-Type\"] === \"application/octet-stream\";",
 							"tests[\"Content-Disposition is present\"] = responseHeaders.hasOwnProperty(\"Content-Disposition\");",
 							"tests[\"Content-Disposition is expected value\"] = responseHeaders[\"Content-Disposition\"] === \"attachment; filename=\\\"converted_files.zip\\\"\";",
+							"tests[\"Content-Length is present\"] = responseHeaders.hasOwnProperty(\"Content-Length\");",
+							"tests[\"Content-Length is greater than zero\"] = responseHeaders[\"Content-Length\"] > 0;",
 							"",
 							"",
 							"",
@@ -66,7 +68,7 @@
 				"header": [
 					{
 						"key": "Accept",
-						"value": "application/zip"
+						"value": "application/octet-stream"
 					}
 				],
 				"body": {
@@ -76,7 +78,7 @@
 							"key": "data",
 							"description": "Upload file",
 							"type": "file",
-							"src": "resume.md"
+							"src": "sample.md"
 						},
 						{
 							"key": "targetName",

@@ -1,12 +1,13 @@
 package com.aug70.resumator.web;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,17 +24,22 @@ public class Controller {
 	@Resource
 	private MdConversionService service;
 	
-	@PostMapping(produces = "application/zip")
-	public void upload(@RequestParam("data") MultipartFile uploadFile, @RequestParam(name="targetName", required=false) String targetName, HttpServletResponse response) throws IOException {
+	@PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> upload(@RequestParam("data") MultipartFile uploadFile, 
+			@RequestParam(name="targetName", required=false) String targetName) {
 
-		try (ByteArrayOutputStream out = service.convertAll(
-				new UploadedFile(uploadFile.getName(), targetName, uploadFile.getBytes()))) {
-			response.setStatus(HttpStatus.CREATED.value());
-			response.setContentType("application/zip");
-			response.addHeader("Content-Disposition", "attachment; filename=\"converted_files.zip\"");
-			out.writeTo(response.getOutputStream());
+		try (ByteArrayOutputStream out = service
+				.convertAll(new UploadedFile(uploadFile.getName(), targetName, uploadFile.getBytes()))) {
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"converted_files.zip\"");
+			headers.setContentLength(out.size());
+			return new ResponseEntity<>(out.toByteArray(), headers, HttpStatus.CREATED);			
+			
+			
 		} catch (Exception ex) {
-			response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}

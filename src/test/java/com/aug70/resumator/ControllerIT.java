@@ -49,9 +49,9 @@ public class ControllerIT {
 				MockMvcRequestBuilders
 				.multipart("/go")
 		        .file(sample)
-		        .param("targetName", "some name").accept("application/zip"))
+		        .param("targetName", "some name").accept(MediaType.APPLICATION_OCTET_STREAM_VALUE))
           .andExpect(status().isCreated())
-          .andExpect(content().contentType("application/zip"));
+          .andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM_VALUE));
 	}
 	
 }

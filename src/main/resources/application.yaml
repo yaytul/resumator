@@ -1,3 +1,1 @@
-corePoolSize: 3
-maxPoolSize: 4
 version: @project.version@

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -24,13 +25,13 @@ public class TestUtil {
 		return new ByteArrayInputStream(sampleFile());
 	}
 
-	public static Future<ConvertedFile[]> sampleConvertedFuture() {
+	public static Future<Optional<ConvertedFile[]>> sampleConvertedFuture() {
 		try {
 			byte[] bytes = sampleFile();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(bytes.length);
 			baos.write(bytes, 0, bytes.length);
 			ConvertedFile[] array  = new ConvertedFile[] {new ConvertedFile(UUID.randomUUID().toString(), baos)};
-			return CompletableFuture.completedFuture(array);
+			return CompletableFuture.completedFuture(Optional.of(array));
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,7 @@ class Md2Xml implements Converter {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Md2Xml.class);
 
 	@Override
-	public ConvertedFile[] convert(UploadedFile file) throws IOException {
+	public Stream<ConvertedFile> convert(UploadedFile file) {
 		long start = System.currentTimeMillis();
 		try(
 			InputStream stream = file.getInputStream();
@@ -24,7 +25,9 @@ class Md2Xml implements Converter {
 		) {
 			String xml = ConverterWrapper.toXml(reader);
 			LOGGER.info(String.format("Xml converted in %s ms.", System.currentTimeMillis() - start));
-			return new ConvertedFile[] { new ConvertedFile(file.getName() + ".xml", xml)};
+			return Stream.of(new ConvertedFile(file.getName() + ".xml", xml));
+		} catch (IOException ioex) {
+			return Stream.empty();
 		}
 	}
 }

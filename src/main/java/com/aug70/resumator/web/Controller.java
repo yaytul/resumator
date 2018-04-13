@@ -2,8 +2,6 @@ package com.aug70.resumator.web;
 
 import java.io.ByteArrayOutputStream;
 
-import javax.annotation.Resource;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,19 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.aug70.resumator.model.UploadedFile;
-import com.aug70.resumator.service.MdConversionService;
+import com.aug70.resumator.service.ConverterService;
 
 @RestController
 @RequestMapping("/go")
 public class Controller {
 
-	@Resource
-	private MdConversionService service;
+	private ConverterService service = new ConverterService();
 	
 	@PostMapping(produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 	public ResponseEntity<byte[]> upload(@RequestParam("data") MultipartFile uploadFile, 
 			@RequestParam(name="targetName", required=false) String targetName) {
 
+		
 		try (ByteArrayOutputStream out = service
 				.convertAll(new UploadedFile(uploadFile.getName(), targetName, uploadFile.getBytes()))) {
 			

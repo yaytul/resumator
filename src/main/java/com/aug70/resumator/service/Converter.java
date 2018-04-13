@@ -1,12 +1,13 @@
 package com.aug70.resumator.service;
 
-import java.io.IOException;
+import java.util.stream.Stream;
 
 import com.aug70.resumator.model.ConvertedFile;
 import com.aug70.resumator.model.UploadedFile;
 
+@FunctionalInterface
 interface Converter {
 
-	ConvertedFile[] convert(UploadedFile file) throws IOException ;
+	Stream<ConvertedFile> convert(UploadedFile file);
 
 }
